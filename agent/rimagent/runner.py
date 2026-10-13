@@ -267,6 +267,10 @@ class Runner:
             if self.bridge.health():
                 return
             time.sleep(3)
+        if not self.cfg["play"].get("auto_restart_game", True) and not self.cfg["play"].get("continue_after_episode", True):
+            self.bus.emit("log", {"text": "game unreachable for 60s and auto_restart_game is off; stopping"})
+            self.stop = True
+            return
         if self.cfg["play"].get("auto_restart_game", True):
             script = ROOT / "script" / ("restart-game.ps1" if os.name == "nt" else "restart-game.sh")
             cmd = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script)] if os.name == "nt" else [str(script)]
@@ -305,6 +309,15 @@ class Runner:
             new_events = self.poll_events()
             alerts = run_watchers(self.ctx, new_events)
             self.pending_alerts += alerts
+            if self.llm.out_of_credits:
+                self.bus.emit("log", {"text": "LLM provider reports no credit left; pausing, saving as rimagent-out-of-credits and stopping"})
+                try:
+                    self.bridge.call("game.pause", paused=True)
+                    self.bridge.call("game.save", name="rimagent-out-of-credits")
+                except BridgeError as e:
+                    self.bus.emit("error", {"text": f"save on out-of-credits: {e}"})
+                self.stop = True
+                return
             # episode end conditions
             if int(st.get("colonists", 0)) == 0 and day > self.start_day:
                 self.end_episode("all colonists dead")
@@ -839,6 +852,10 @@ class Runner:
         self.ctx.end_episode_reason = None
         self.seed = ""
         if self.stop:
+            return
+        if not self.cfg["play"].get("continue_after_episode", True):
+            self.bus.emit("log", {"text": "continue_after_episode is off; stopping after this episode"})
+            self.stop = True
             return
         self.new_game()
 

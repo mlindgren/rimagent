@@ -44,14 +44,19 @@ class LLM:
     def __init__(self):
         c = CONFIG["llm"]
         self.model = c["model"]
-        self.client = OpenAI(base_url=c["base_url"], api_key=c["api_key"], timeout=c.get("timeout_s", 240), max_retries=0)  # the loop handles retries; a hung socket must not freeze play
+        self.client = OpenAI(base_url=c["base_url"], api_key=c["api_key"], timeout=c.get("timeout_s", 240), max_retries=int(c.get("max_retries", 0)))  # the loop handles retries; a hung socket must not freeze play
         self._sem = threading.Semaphore(int(c.get("max_streams", 4)))
         self.default_thinking = bool(c.get("thinking", True))
         self.max_tokens = int(c.get("max_tokens", 4000))
+        # Hosted APIs (e.g. Anthropic's OpenAI-compatible endpoint) reject non-default temperature and don't need
+        # Qwen's chat_template_kwargs: `temperature: null` omits it, `chat_template_kwargs: false` drops the extra body.
+        self.temperature_override = c.get("temperature", "default")
+        self.send_template_kwargs = bool(c.get("chat_template_kwargs", True))
         self._capture_fh = None
         if bool(c.get("capture", True)):
             self._capture_fh = (SFT_RAW / f"capture-{time.strftime('%Y%m%d-%H%M%S')}-{os.getpid()}.jsonl").open("a", encoding="utf-8")
         self._capture_lock = threading.Lock()
+        self.out_of_credits = False  # set when the provider reports an exhausted balance; the runner stops on it
 
     def _capture(self, messages: list[dict[str, Any]], tools: list[dict[str, Any]] | None, reply: "LLMReply", meta: dict[str, Any] | None) -> None:
         if not self._capture_fh:
@@ -72,16 +77,24 @@ class LLM:
             "model": self.model,
             "messages": messages,
             "max_tokens": max_tokens or self.max_tokens,
-            "temperature": temperature,
-            "extra_body": {"chat_template_kwargs": {"enable_thinking": thinking}},
         }
+        temp = temperature if self.temperature_override == "default" else self.temperature_override
+        if temp is not None:
+            kwargs["temperature"] = temp
+        if self.send_template_kwargs:
+            kwargs["extra_body"] = {"chat_template_kwargs": {"enable_thinking": thinking}}
         if tools:
             kwargs["tools"] = tools
             if tool_choice:
                 kwargs["tool_choice"] = tool_choice
         t0 = time.time()
         with self._sem:
-            resp = self.client.chat.completions.create(**kwargs)
+            try:
+                resp = self.client.chat.completions.create(**kwargs)
+            except Exception as e:  # noqa: BLE001
+                if "credit balance" in str(e).lower():  # Anthropic: "Your credit balance is too low to access the Anthropic API"
+                    self.out_of_credits = True
+                raise
         msg = resp.choices[0].message
         reply = LLMReply(elapsed=time.time() - t0)
         reply.content = msg.content or ""
