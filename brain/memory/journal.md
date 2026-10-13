@@ -24,3 +24,9 @@ The steward's stock jobs (forestry/foraging/hunting/mining/livestock) keep desig
 
 ## 2026-10-12 20:12 (episode 1): Build a bed and a roof before anything else on day 0
 Game 1 ended at the 1-day cap with food_days only 8-10 (fungus and survival meals), 3 colonists, and the shelter still unbuilt (27 blueprints queued at the end). Lesson: on day 0 the critical path is food (cook bill first), then one roofed room with beds; expansion and research come after. Verify blueprints=0 before ending the first step. Sources of wasted steps: hauling designations to meals 70 tiles away failed silently; check distance before relying on a forage or haul.
+
+## 2026-10-12 20:51 (episode 2): Food runs out faster than the stock looks
+A 'cook target met' bill hides a food crisis. With 3 colonists and one campfire, food fell 11.4d -> 3.1d in four days (day 5-9). Track food_days each step (meals + raw food / (colonists x 1.6)), add a second cooking source and sow rice on day 0-1, not day 9. Rice needs 3 grow days, so late sowing means no food for a week.
+
+## 2026-10-12 20:51 (episode 2): Moods drop fast in a shared hot dark barracks
+Three colonists in one shared barracks (impressiveness -18 to -26, unlit, 33-38 C) fell from ~60 to 30-38 mood within 6 days. Build one bedroom per colonist with a torch lamp in each, passive coolers before summer, bury corpses the same day, and read morale_report every step.

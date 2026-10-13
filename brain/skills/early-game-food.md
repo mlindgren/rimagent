@@ -1,45 +1,54 @@
 ---
-name: early-game-food
-description: Pull in when food stock is under ~10 days, when placing the first growing zones or choosing a crop, before designating any animal for hunting, and when deciding how to cook (campfire vs stove, raw food, food poisoning).
-tags: [food, farming, hunting, cooking, early-game]
 always: false
+description: Pull in when food stock is under ~10 days, when placing the first growing
+  zones or choosing a crop, before designating any animal for hunting, and when deciding
+  how to cook (campfire vs stove, raw food, food poisoning).
+name: early-game-food
+tags:
+- food
+- farming
+- hunting
+- cooking
+- early-game
 ---
+
 # Early-game food
 
 ## Core numbers
-- An adult human burns **1.6 nutrition/day**, stores 1.0 max. Below 25% saturation = Hungry (-6 mood), below 12.5% = Ravenously hungry (-12), 0% = malnutrition (+2%/hour, death at 100%; ~72.5 h from full to death).
-- 1 raw item (rice, potato, corn, meat, berries) = **0.05 nutrition**. A simple meal costs **0.5 nutrition (10 raw items)** and gives **0.9** (180% efficiency). Budget **~2 simple meals or ~32 raw units per colonist per day**.
-- Raw rice/potatoes/corn/meat/eggs: **Ate raw food -7 mood** and 2% food-poisoning. Berries and milk: no mood penalty, still 2%.
+- An adult burns 1.6 nutrition/day. Hungry below 25%, ravenous below 12.5%, starvation at 0%.
+- 1 raw item = 0.05 nutrition. A simple meal = 10 raw items (0.5) -> 0.9 nutrition. Budget ~2 simple meals (~32 raw units) per colonist per day.
+- Raw food: -7 mood ("ate raw food"). Cook everything.
 
-## Crop comparison (normal soil; all need fertility >= 70%)
-| Crop (def) | Grow days | Yield | Nutrition/harvest | Fertility sens. | Notes |
-|---|---|---|---|---|---|
-| Rice (Plant_Rice) | 3 | 6 | 0.30 | 100% | Fastest and most stable; 183% the labor of potatoes, 366% of corn. |
-| Potato (Plant_Potato) | 5.8 | 11 | 0.55 | 40% | Best on gravel/stony soil; gains little from rich soil. |
-| Corn (Plant_Corn) | 11.3 | 22 | 1.10 | 100% | Least labor; 150 HP; keeps without a freezer. One lost harvest hurts. |
+## Lesson from episode 2 (3 colonists, Rough): food fell 11.4d (day 5) -> 3.1d (day 9)
+- Cause: one campfire, one cook, and cook bill target 40 while meals were consumed faster than produced. Food stock looked fine ("40/40 target met") and then ran out in 4 days.
+- Rule: **food_days is the metric, not the bill target.** Track meals + raw food / (colonists x 1.6) every step. If it falls by more than 1 day per 24h, act at once.
+- Build a second cooking source before day 5 (second campfire under a roof, or a stove). A single campfire cooks too slowly for 3 pawns plus hunting and foraging returns.
+- Plant rice on day 0-1 (not day 9). Rice takes 3 days to grow; it is the only crop fast enough to matter for the first 10 days. Growing zone of 27 cells sown at day 9 gave no food until day 13.
+- Hunting targets: the steward default (787 meat) led to all colonists hunting; set hunting to ~150 and foraging to ~150 during the first 10 days.
+- Berries on the map rot in 14 days; they are a bridge, not a plan.
+- Alpaca and turkey are safe 0% revenge animals; watch for a mad gazelle on day 3 (drafted hunter needed).
 
-Per tile per day all three are within ~5% (rice slightly ahead). Grow days assume full light and ideal temperature; night rest roughly doubles real time (potatoes ~10.7 days).
+## Crop comparison (normal soil; fertility >= 70%)
+| Crop | Grow days | Yield | Nutrition/harvest | Notes |
+|---|---|---|---|---|
+| Rice | 3 | 6 | 0.30 | Fastest; sow first |
+| Potato | 5.8 | 11 | 0.55 | Stony soil |
+| Corn | 11.3 | 22 | 1.10 | Least labor; sow after 10 days of meals banked |
 
-**Do this:** sow rice first. Once ~10 days of meals are banked, move most tiles to corn (less work per food). Use potatoes only when the fertile ground is gravel/stony. Within ~12 days of winter or a forecast cold snap, sow only rice; corn will not reach maturity and plants die below their minimum growth temperature.
+Sow only rice within 12 days of winter.
 
-## Field sizing and placement
-- **10+ tiles per colonist** with year-round growing; **25 tiles per colonist** feeds one pawn indefinitely on Losing is Fun with simple meals, a Plants-6 grower and Growing at priority 1. Add more for unskilled growers or short seasons.
-- `rw_ui_zone`: only on unroofed soil with fertility >= 70% and light >= 51%, near the kitchen/stockpile. Leave 4-tile gaps between fields (blight radius) and strip flammable plants within 2 tiles (raiders light fields).
-- `rw_ui_set_work`: Growing = 1 for the best Plants pawn.
-
-## Foraging
-Wild berry bushes give berries (14 days to rot). Find them with `rw_map_find` and harvest via `rw_ui_designate`. This bridges days 1-5 until the first rice comes in.
+## Field sizing
+- 10+ tiles per colonist; 25 per colonist for indefinite food.
+- Only unroofed fertile (f) soil, light >= 51%, near kitchen/stockpile. Leave 4-tile gaps.
+- Growing = priority 1 for the best Plants pawn.
 
 ## Hunting safely
-- Only pawns holding a **ranged weapon** hunt; never send melee. Hunters fire from max range; long-range, high-damage-per-shot weapons (bolt-action rifle, greatbow) are safest. Revenge chance is **3x higher at close range**.
-- Check **Revenge chance on harm** (`rw_defs_get` or the Wildlife list). Prefer **0%** animals: deer, gazelle, alpaca, dromedary. Do NOT hunt predators, boomrats/boomalopes (explode and start fires), or herd species with revenge chance: one manhunter can pull every same-species animal within 25 tiles.
-- Hunting stealth = 5% per Shooting level + 5% per Animals level (cap 90%); low-skill hunters take only safe or already-injured prey. No incendiary weapons.
-- Hunted corpses are auto-unforbidden and hauled by the hunter.
+- Only ranged-armed pawns hunt. Prefer 0% revenge animals (deer, gazelle, alpaca, turkey). Avoid predators and boomrats/boomalopes.
+- Check corpses and roaming herds; a mech hive or scorcher nearby (episode 2: Murdlax mechhive ~60 tiles away) makes the forage area off-limits.
 
 ## Butchering and cooking
-- Drop a butcher spot immediately (free, 0 work) but it yields only 70% meat/leather; build a butcher table when materials allow. Raw meat rots in 2 days, vegetables ~30 days longer.
-- `rw_ui_build` def **Campfire**: 20 wood, burns 10 wood/day, holds 20, must sit under a roof (rain burns extra fuel). `rw_ui_add_bill` "simple meal, do until you have 10-15". Campfire work speed factor is 0.5 (a 300-work meal takes 600); a fueled stove cooks 2x faster and unlocks fine meals.
-- Give Cooking to the highest-skill cook. Food-poison chance by Cooking level: 0 = 5%, 3 = 2%, 4 = 1.5%, 6 = 0.5%, 8+ = 0.15% or less, scaled by kitchen cleanliness and difficulty (Losing is Fun x1.2). Skill 3+ in a clean room already beats raw food. Nutrient paste (dispenser + power) is 300% efficient and never poisons.
-- Simple meals rot in 4 days at room temperature: cook small batches until a freezer exists.
-
-Sources: Rice plant; Potato plant; Corn plant; Nutrition; Food; Saturation; Growing zone; Simple meal; Meals; Campfire; Food Poison Chance; Hunt; Hunting Stealth; Food production; Raw food; Berries; Butcher spot
+- Butcher spot (free) gives 70% meat; a butcher table is better.
+- Campfire: 20 wood, 10 wood/day, roof it. A fueled stove cooks 2x faster.
+- Simple meals rot in 4 days at room temperature; cook in batches of 10-20, not 60.
+- Cooking skill sets poison chance: 0 = 5%, 3 = 2%, 6 = 0.5%.
+- Nutrient paste (dispenser + power) never poisons.
