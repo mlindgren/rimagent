@@ -1,12 +1,9 @@
 ---
-always: false
-description: Pull in when a pawn is injured, bleeding, downed, sick (infection, flu,
-  plague, malaria), when setting medical policies, assigning a doctor, or deciding
-  what medicine to use or grow.
 name: medicine-and-health
-tags: []
+description: Pull in when a pawn is injured, bleeding, downed, sick (infection, flu, plague, malaria), when setting medical policies, assigning a doctor, or deciding what medicine to use or grow.
+tags: [medicine, health, doctor, disease, infection]
+always: false
 ---
-
 # Medicine and health
 
 ## Setup (do this on day 1)
@@ -39,7 +36,6 @@ Immunity gain speed falls when hungry or tired and rises with bed type (ground 1
 
 ## Bleeding and blood loss
 - Blood loss stages: minor 15%, moderate 30%, severe 45%, extreme 60% (life threatening), death at 100%. Bleeding stops only when tended. Read "bleeding out in X hours" from rw_state_pawn and tend the fastest bleeder first.
-- **Distance beats urgency.** A downed pawn bleeds out in ~2-3h; a rescue walk of 60+ cells takes about as long. Rule: rescue only if the downed pawn is within ~30 cells of the base (or an armed pawn is already within ~20 cells of them). Beyond that, let them die — the mood cost of a death is far smaller than the cascading losses when the rescuer gets bitten and goes down too (ep 3: a mad raccoon at day 3; Carol downed 60+ cells out, the two pawns sent to rescue her were both bitten and downed, all 3 colonists lost within 4h).
 
 ## When a colonist is downed
 1. Rescue with a right-click order: rw_ui_order(pawn=<healthy pawn>, at=<downed pawn id>, label="rescue") carries them to a Bed or sleeping spot in a safe-temperature room; a sleeping spot has only 0.7 surgery success.
