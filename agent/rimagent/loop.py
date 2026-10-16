@@ -107,6 +107,7 @@ def think(ctx: Context, user_message: str, situation_hint: str = "", *, max_call
     st = ctx.stream
     ctx.emit("think_start", {"trigger": trigger, "prompt_chars": len(system) + len(user_message), "tools": len(tools), "stream": st})
     step = 0
+    failed: dict[str, int] = {}  # identical failing calls this step; small models without thinking tend to resend them verbatim
     while True:
         if res.calls >= max_calls:
             messages.append({"role": "user", "content": f"You have used {res.calls} tool calls, the limit for this step. Call {end_tools[0]} now to finish."})
@@ -150,6 +151,12 @@ def think(ctx: Context, user_message: str, situation_hint: str = "", *, max_call
             if isinstance(result, dict) and "_image_png_b64" in result:
                 image = result.pop("_image_png_b64")
             text = to_text(result)
+            if not ok:
+                key = name + json.dumps(args, sort_keys=True, default=str)
+                failed[key] = failed.get(key, 0) + 1
+                if failed[key] > 1:
+                    text += (f"\n\nThis exact call has now failed {failed[key]} times this step. Do not send it again unchanged: "
+                             "fix the arguments the error names (see the tool description), or use a different tool.")
             # The model gets `text` in full; the event and the transcript are clipped for size. Clipping them
             # without saying so makes the run log misrepresent what the model was given -- a result cut mid-JSON
             # reads as a malformed tool result rather than a long one. to_text already marks its own truncation.
