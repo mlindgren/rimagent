@@ -79,9 +79,16 @@ def read(name: str) -> str:
     raise FileNotFoundError(f"no skill {name!r}; known: {[s.name for s in load_all()]}")
 
 
-def write(name: str, description: str, body: str, tags: list[str] | None = None, always: bool = False) -> Path:
+def write(name: str, description: str, body: str, tags: list[str] | None = None, always: bool | None = None) -> Path:
+    """Create or overwrite a skill. tags/always left as None keep the existing skill's values (a rewrite that
+    omits them must not silently drop a skill's tags or take an always-on skill out of every prompt)."""
     path = SKILLS / f"{_slug(name)}.md"
-    post = frontmatter.Post(body.strip() + "\n", name=name, description=description, tags=tags or [], always=always)
+    old = next((s for s in load_all() if s.path == path), None)
+    if tags is None:
+        tags = old.tags if old else []
+    if always is None:
+        always = old.always if old else False
+    post = frontmatter.Post(body.strip() + "\n", name=name, description=description, tags=tags, always=always)
     path.write_text(frontmatter.dumps(post), encoding="utf-8")
     return path
 
