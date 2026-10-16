@@ -30,3 +30,9 @@ A 'cook target met' bill hides a food crisis. With 3 colonists and one campfire,
 
 ## 2026-10-12 20:51 (episode 2): Moods drop fast in a shared hot dark barracks
 Three colonists in one shared barracks (impressiveness -18 to -26, unlit, 33-38 C) fell from ~60 to 30-38 mood within 6 days. Build one bedroom per colonist with a torch lamp in each, passive coolers before summer, bury corpses the same day, and read morale_report every step.
+
+## 2026-10-15 22:21 (episode 3): Minor mental breaks (insulting spree, daze, food binge) last ~4 in-game days (ma
+Minor mental breaks (insulting spree, daze, food binge) last ~4 in-game days (major 0.8d, extreme 0.5d) — a break at mood ~28 on day 1 of a short game costs most of its mood score. If a colonist is below ~40% mood within the first 24h, fix the top 2-3 negatives from morale_report immediately (table+stool, lamp, second recreation type, bury corpses) instead of waiting for the break to burn off. Insulting sprees need 2+ colonists in reach; separating the group or arresting the insulter ends it early.
+
+## 2026-10-15 22:21 (episode 3): A step that ends with an LLM error ("gave up after N attempts") loses its work: 
+A step that ends with an LLM error ("gave up after N attempts") loses its work: the game keeps running but no actions were applied, and the notebook may claim things were done that weren't. Keep steps short, end every step with end_turn, and after any errored step re-read state from scratch instead of trusting the notebook.

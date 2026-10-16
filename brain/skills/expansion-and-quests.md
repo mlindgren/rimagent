@@ -7,7 +7,8 @@ name: expansion-and-quests
 tags:
 - expansion
 - quests
-- gate
+- missions
+- caravan
 ---
 
 # Expansion and quests

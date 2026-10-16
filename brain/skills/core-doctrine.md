@@ -36,6 +36,10 @@ When two things compete, the one higher on this list wins.
 Read (state summary, alerts, letters, events) -> one or two problems -> act and verify (failed lists, blueprint counts) -> notebook_append for notable events -> end_turn with a wake plan (1-2 h in fights, 4-8 h normally, 12 h when calm).
 Never end a step without end_turn. Act by call 10.
 
+## Step discipline (episode 3 lost a step to this)
+- A step is 3-8 in-game hours of real time. If a step ends with a visible LLM error ("gave up after N attempts"), the work of that step was lost: re-read state from scratch at the start of the next step, do not trust the notebook for what got done.
+- Keep steps short and end with end_turn every time; a long step that errors out costs hours of game time for nothing.
+
 ## Self-improvement rules
 - Notebook after notable events; journal only durable lessons.
 - Edit existing skills rather than adding near-duplicates.
