@@ -4,11 +4,7 @@ description: Pull in when planning or placing walls, doors, roofs, floors, bedro
   the home area, or choosing wood vs stone; also when a roof collapse, fire or "sleeping
   outside" mood problem shows up.
 name: base-building
-tags:
-- building
-- rooms
-- shelter
-- defense
+tags: []
 ---
 
 # Base building
@@ -28,6 +24,11 @@ Materials: **Wood** 0.65x HP (195 HP wall), **100% flammable**, 0.7x work; **Ste
 - A single **Door left as a frame** (blueprint, not built) keeps the room **"outdoors"**: beds/campfire count as outside and you get `slept outside` + `slept on the ground` + `slept in the cold` on every pawn (~-12 mood, mood 45 with food fine). The pawns will still build it eventually, but do not assume the room works until it is.
 - **Verify enclosure with state, not with the build result:** `state.summary.room_digest` (or `state.rooms`) must show a `Barracks`/`Bedroom` row with a sane `cells` count and an indoor `temp`; `state.summary.blueprints` and `.frames` must both be **0**. Use my `step_brief` tool for that in one call.
 - Build the door op **inside** the same `ui.build_many` batch as the wall rect (the door replaces that wall cell) — but then WAIT for it: keep a Construction posture until `frames==0`.
+
+## Roofing is the day-0 critical path (ep 3: 3 days of "slept outside/cold", mood 28, a daze)
+- A walled room with **no roof** is outdoors for every purpose: sleeping, temperature, mood. The auto-roof only generates over a fully enclosed room once the walls (and door, built not framed) exist — and it needs nothing else, so if `room_digest` shows no indoor temp after the walls are up, the room is not enclosed (a gap, or a door still a frame). Check `rw_map_view` with `layer=roof` over the room.
+- **Wood is the roof tax.** Floors (wood planks) and torches eat the same wood as the walls. Ep 3: wood hit 0 after the walls, floors/torches stalled, the room stayed unroofed for 3 days, mood fell to 28 and a colonist hit a daze. Budget: walls+door ~300 wood, then 30 planks + 3 torches before anything else; keep the forestry target at 300 until `frames==0` AND the room shows an indoor temp.
+- If the room is walled, enclosed, and still unroofed after wood flows, designate the roof area manually (right-click the roof layer / `rw_ui_designate` over the interior) — do not wait for auto-roof to retry.
 
 ## Crashlanded day-0 shelter that worked (ep.1, temperate forest)
 Wood walls `rect [119,97,11,9]` (11x9 outline), a wood **Door** in the south wall at the midpoint `[124,97]`, 3 **wood Beds** rot E at `[120,98]/[120,100]/[120,102]`, campfire `[128,103]` — **interior ~9x7 (63 cells)** roofs fully (roof reaches 6 tiles from any wall, so interiors up to 12 wide are fine). Warm-up needed only one Construction posture (+0.6) for ~16h to finish door frames. Result: `room_digest` -> `Barracks, 63 cells, temp 28C`.
@@ -54,11 +55,11 @@ Floors stop wild plant growth, speed movement and remove the terrain cleanliness
 
 ## Layout checklist (first days)
 1. `rw_ui_zone` stockpile where the base will be and build around it (outdoor items take months to deteriorate).
-2. Priority 1: walls + door for one ~7x7 room, beds (a normal bed saves ~1 hour sleep/day, avoids Slept on the ground), a 1x2 table + stools (avoids Ate without table).
+2. Priority 1: walls + door for one ~7x7 room, beds (a normal bed saves ~1 hour sleep/day, avoids Slept on the ground), a 1x2 table + stools (avoids Ate without table). **Verify the roof in the same step the walls finish** (room_digest indoor temp); if missing, fix the enclosure and designate the roof area manually.
 3. Kitchen: raw-food shelf/stockpile **adjacent** to the stove (otherwise the cook hauls one meal's ingredients per trip); meal stockpile next door, later a freezer (coolers blue side in, fully enclosed and roofed, usually 2+). Keep fields, kitchen and freezer within a short walk.
 4. Priority 2: wood-fired generator, conduits (buildings connect within 6 tiles), lamps, end table + dresser.
 
 ## Home area
-Colonists **repair, clean and extinguish fires only inside the home area** (`rw_ui_area(action=home_add, rect=...)` / `home_remove`). Keep it tight around buildings and fields, add a 1-wide strip along critical conduits so short-circuit breaks self-repair, and widen it temporarily when a wildfire approaches.
+Colonists **repair, clean and extinguish fires only inside the home area** (`rw_ui_area(action=home_add, rect=...)` / `home_remove`). Keep it tight around buildings and fields, add a 1-wide strip along critical conduits so short-circuit breaks self-repair, and widen it temporarily when a wildfire approaches. **Also restrict every colonist to the Home area via rw_ui_set_policies area=Home** — this is what stops a mad animal from dragging a rescuer 150 cells from the base (ep 3 lesson).
 
 Sources: Wall; Door; Roof; Rooms; Space; Thoughts; Wood; Stone blocks; Granite blocks; Sandstone blocks; Steel; Flammability; Floors; Home area; Basics

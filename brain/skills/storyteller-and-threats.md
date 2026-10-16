@@ -1,9 +1,12 @@
 ---
-name: storyteller-and-threats
-description: Pull in when planning the colony's first year, deciding whether to keep or sell loot, reading an incident letter (raid, manhunters, fallout, flare, drone, infestation), or judging how big the next threat will be.
-tags: [storyteller, cassandra, wealth, threats, incidents, difficulty]
 always: false
+description: Pull in when planning the colony's first year, deciding whether to keep
+  or sell loot, reading an incident letter (raid, manhunters, fallout, flare, drone,
+  infestation), or judging how big the next threat will be.
+name: storyteller-and-threats
+tags: []
 ---
+
 # Storyteller and threats
 
 ## Cassandra Classic pacing
@@ -11,6 +14,7 @@ always: false
 - The cycle starts day 11: 4.6-day "On" phases alternating with 6-day "Off" phases (On 11.0-15.6, 21.6-26.2, 32.2-36.8, 42.8-47.4, then +10.6 each). Each On phase sends 1-2 major threats, at least 1.9 days apart; ~8.5 per year. Off phases are safe windows for caravans, big builds and surgery.
 - Major threat weights: raid 9.0, infestation 2.8 (needs 400 points, 20-day refire), manhunter pack 2.0 (15-day refire), psychic ship 1.5, mad animals 1.0.
 - Raid types gate on points: mechanoids and centre drop pods need 300, sieges 500, sappers/breachers 700.
+- **The single-animal "Mad animal" variant is NOT a major threat and can arrive any time** (ep 3: day 3, 15h, a raccoon — before the day-5 lone raider). It is small (raccoon combat power ~35) but it charges the nearest human anywhere on the map, and the colony's response (rescues, chases) is what kills, not the animal. See animals-and-hunting for the full response.
 
 ## What sets threat size
 Raid points = (Wealth points + Pawn points) x Threat scale x Starting factor x Adaption factor. Check wealth via rw_state_summary.
@@ -31,7 +35,7 @@ Raid points = (Wealth points + Pawn points) x Threat scale x Starting factor x A
 | Incident | Numbers | Response |
 |---|---|---|
 | Raid | see defense-basics | Draft behind cover at the chokepoint |
-| Mad animal | one animal, charges nearest human | Draft 2-3 pawns, shoot it together |
+| Mad animal (single) | one animal (raccoon ~35 power), charges nearest human anywhere on map | Restrict ALL colonists to Home area; the animal loses interest. Never send pawns out to chase or to rescue a bitten pawn 50+ cells away (ep 3: this killed 3 colonists). One armed pawn ends it in seconds if it must be met. |
 | Manhunter pack | 40% more points than a raid; lingers 24-54 h; cannot open doors | Everyone indoors, doors closed, shoot through a held-open door; scaria may rot corpses |
 | Disease (flu/plague/malaria) | plague kills in ~1.5 days untreated | Bed rest immediately, medicine, rw_ui_set_policies medical NormalOrWorse or better |
 | Cold snap / heat wave | 1.5-3.5 days, 30-day refire | Heaters/campfires or coolers, keep pawns indoors, harvest crops early |
@@ -40,6 +44,7 @@ Raid points = (Wealth points + Pawn points) x Threat scale x Starting factor x A
 | Eclipse | 0.75-1.25 days, no solar, crops pause | Batteries; otherwise ignore |
 | Psychic drone | -12 to -40 mood on one gender, 0.75-1.75 days; Low level under 800 points | Reduce other stressors; keep the affected gender off risky work |
 | Infestation | needs overhead mountain within 30 tiles of a building, warm (>-8 C), dark | Avoid bedrooms under mountain early; if it spawns, kite insects (they guard 10 tiles) and burn hives |
+| Stranger in black | joins at a crisis, often with medicine and fine meals; may be a man in black with combat skills | Accept; set their bed and medical policy; they are a free doctor until they leave |
 
 Pitfall: a downed colonist lowers adaption (easier next raid); a dead one adds corpse wealth and mood debuffs. Rescue first, then destroy loot you will not use.
 

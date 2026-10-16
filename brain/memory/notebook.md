@@ -1,34 +1,49 @@
 # Colony notebook, episode 3 (seed colony-20261012)
 
-Day 1, 22h. Home [122,133].
+Day 3, 23h → Day 4, 1h. CRISIS: 3/3 original colonists downed, Carol died of blood loss.
 
-## Shelter (just blueprinted, ~31 blueprints pending)
-- Room: west wall x126 z139-145 (6 built + 1 door blueprint), east wall x133 z143-145, south z145 x127-132, north z139 x127-132. Door at [126,142]. Interior x127-132, z140-144 (6x5=30 cells).
-- Beds (blueprints): [128,141] rot E, [128,143] rot E, [130,144] rot S.
-- Campfire (blueprint) [131,144] (heating); horseshoes pin [131,140].
-- Inside: table [133,139] + stool [133,138] (actually outside east wall — table is at x133 which is the wall column... verify after build), research bench [132,141] 3x2.
-- Rally point set: [127,140,6,5] (inside room).
-- NOTE: table+stool may be outside the room (x133 = wall). Check room_digest after build; if table outside, it still works for eating but mood "ate without table" only needs a table reachable.
+## Current state (Day 4, 1h)
+- **Villegas** (Human106) [128,143]: DOWNED, health 51, bleeding 3.22h, in bed, mood 29. Needs medical care.
+- **Zack** (Human109) [182,75]: DOWNED, health 41, bleeding 3.56h, NOT in bed, mood 0. Danny is rescuing him.
+- **Danny** (Human40168) [138,134]: STRANGER IN BLACK (joined Day 3 22h), health 72, bleeding 1.43h, mood 49, Shooting 16!!, Melee 9!!, Artistic 7!!, Medicine 0. Carrying 5x industrial med + 11 fine meals. Currently rescuing Zack.
+- **Carol** (Human112): DEAD (blood loss, Day 3 23h). Corpse needs burial.
+- **Ollie** (Husky3836): at base.
 
-## Food (9 days, OK)
-- 47 survival meals + 1 simple meal + 4 berries. Campfire cook bill CookMealSimple target 22 (active, outside at [124,135]).
-- Rice zone rice1 [134,121,8,8] (64 cells, 12 planted, 3-day grow).
-- Wood total ~336 (290 stored + loose).
+## Medical setup
+- 2 medical beds set: Bed38500 [128,141], Bed38423 [130,144].
+- Danny has 5x industrial med in inventory.
+- No doctor available (Medicine skill 0).
+- Villegas in regular bed, needs to be moved to medical bed.
 
-## Roles
-- Villegas Human106: Mining 12, Melee 8, Shooting 6 (builder/miner).
-- Zack Human109: Melee 12, Shooting 11, Animals 4 (fighter, holds bolt-action rifle at [135,133]).
-- Carol Human112: Crafting 7, Shooting 4, Plants 4 (cook/grower).
-- Ollie Husky3836 (1 animal).
+## Threats
+- 2 Toughspikes (Dark entities) 64-68 cells from home in fog near tomb [157,66]. Not immediate threat.
+- No active hostiles on map.
+
+## Resources
+- Wood: 5 (CRISIS - need more for construction)
+- Steel: 425
+- ComponentIndustrial: 30
+- Silver: 800
+- MedicineIndustrial: 30
+- Meals: 36 (6.9 days)
+- Food: 6.9 days
 
 ## Steward
-- Posture "warmup" 36h: Construction +0.5, Cooking +0.3, Growing +0.3, Hauling -0.3.
-- Stock: forestry 259/500, foraging 7/225, hunting 0/150, mining 425/300 (met), production 1/22. All orders on.
+- Posture: moodfix (expires in 17h; Hauling +0.3, Construction +0.4, PlantCutting +0.2, Growing -0.3, Cooking +0.2)
+- Stock: forestry 5/300 (CRISIS), foraging 44/225, hunting 0/150, mining 425/300 (met)
+- Orders: all active. Combat clear. Rescue: Danny carrying Zack.
 
-## TODO / next
-1. Verify room encloses (room_digest should show a Bedroom/Barracks row with indoor temp) + blueprints→0.
-2. Food: confirm colonists eating (survival meals); rice in ~3 days. Keep cooking bill running.
-3. Research: Batteries current (bench built, should start). Queue: SolarPanels, Pemmican, Smithing.
-4. After room done: consider geothermal (steam geyser) or wind turbine + battery for power; devilstrand crop.
-5. Weapons: Zack should equip bolt-action rifle.
-6. Recreations: only 2 types (need 3) — add horseshoes pin or chess table later.
+## TODO (priority order)
+1. **Rescue Zack** - Danny is on it, verify he gets there.
+2. **Medical care** - Get Villegas and Danny to medical beds. Danny can self-tend.
+3. **Wood crisis** - Forestry at 5/300. Need to raise target or force run.
+4. **Burial** - Carol's corpse needs burial (mood).
+5. **Room** - Still UNROOFED (x127-132 z140-144). "Slept outside/cold" debuff on all.
+6. **Research** - Batteries at 11%.
+7. **Beds** - 3 beds for 4 colonists (Danny needs a bed).
+
+## Next steps
+- Verify Zack rescued and in medical bed.
+- Force forestry run to get wood flowing.
+- Set up burial for Carol.
+- Check if room roofs once wood arrives.

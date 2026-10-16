@@ -4,13 +4,7 @@ description: Pull in when a raid letter arrives, rw_state_threats shows hostiles
   or when planning walls, traps, turrets, chokepoints and draft positioning for a
   small colony.
 name: defense-basics
-tags:
-- defense
-- raids
-- combat
-- killbox
-- turrets
-- cover
+tags: []
 ---
 
 # Defense basics
@@ -57,5 +51,7 @@ Expect 1-2 poorly armed raiders (35-50 points). Before day 10: walled bedroom bl
 - **Two chokepoint lanes, only one is really used.** I built the north door `[124,97]` + barricade rows at z95-96 and a second, decoy south door. Raiders path to the *nearest colonist*, so keep only ONE clearly-open route and let barricades line the approach 1-2 tiles outside the door (leave the door tile itself free to walk through).
 - **Cheap levers before day 10:** raise steel by mining (300 target) for turret parts and components, and buy a **second ranged weapon** with silver (800+ buys a bolt-action/auto-pistol from a trader). One shooter (Shooting 4-6) plus one melee (Melee 13) held; a lone melee drifter "preparing" 100+ tiles away needs no draft — just let the combat order watch it.
 - **Non-human hostiles are not raids.** A sealed tomb of `Fleshbeast` dark entities with `LordJob_FleshbeastAssault` sits ~110 tiles out; it only matters if it breaks out. Manhunter animals (`Manhunter hare` etc.): draft both violence-capable pawns, the fight is over in seconds (rifle + melee knife killed one hare, only a minor bite) — then undraft and tend.
+- **A single mad animal is a containment problem, not a fight** (see animals-and-hunting). Restrict all colonists to Home, let it lose interest. The only fight is if it must be met at the door.
+- **A downed pawn 50+ cells from the base is not a rescue target.** Bleeding out in ~2-3h beats a 60-150 cell walk. Rescue within ~30 cells; beyond that, mourn. Ep 3: the rescue chain (Carol bitten 60+ cells out, two pawns sent to get her, both bitten, all 3 downed) was the colony's death.
 
 Sources: Raid points; Raider; Pirates/Pawns; Tribes/Pawns; Defense tactics; Defense structures; Cover; Sandbags; Spike trap; Mini-turret; Drafting

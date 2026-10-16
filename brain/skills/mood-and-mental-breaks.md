@@ -3,12 +3,7 @@ always: false
 description: Pull in when a colonist's mood is below ~40%, a mental break alert fires,
   or when planning day 1-5 furniture (tables, beds, recreation) to prevent breaks.
 name: mood-and-mental-breaks
-tags:
-- mood
-- mental-break
-- recreation
-- rooms
-- early-game
+tags: []
 ---
 
 # Mood and mental breaks
@@ -30,12 +25,15 @@ tags:
 | Impressiveness low | -3 to -6 | Decor, clean floors, bigger room |
 | Rotting corpse | -6 | Bury corpses the same day (grave/dumping zone) |
 
+**"Slept outside/cold" is a roof problem, not a wall problem.** A fully walled room with no roof reads as outdoors for every pawn (ep 3: 3 days of this held mood at 28 and produced a daze on day 3). Check `room_digest` for an indoor temp the same step the walls finish; fix the enclosure (door still a frame, gap) or designate the roof area manually. See base-building for the wood budget.
+
 ## Recreation
 - Two types under 15,000 wealth, three after. Horseshoes pin and a chess table (needs Complex furniture) are the early ones.
 
 ## Responding to a break
 - Minor: wait it out; keep others away from an insulter.
 - Major/extreme: draft others clear of the pawn; berserkers only stopped by blunt melee.
+- **A major break (e.g. wandering in psychosis) is a death sentence for the pawn if they wander out of the Home area** — ep 3: Villegas hit a major daze at mood 17 and wandered 15 cells from base straight into a mad raccoon's path and got bitten. If a pawn is in a major/extreme break, restrict them to the Home area (rw_ui_set_policies area=Home) or arrest them immediately; do not "let it burn out" while they are outside the walls.
 - Arrest interrupts most breaks but may trigger berserk.
 - Thoughts persist after a break: fix the largest negatives shown by morale_report.
 
