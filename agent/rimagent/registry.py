@@ -56,6 +56,58 @@ def _schema_from_signature(fn: Callable) -> dict[str, Any]:
     return {"type": "object", "properties": props, "required": required}
 
 
+def _split_top(s: str) -> list[str]:
+    parts, depth, cur = [], 0, ""
+    for ch in s:
+        if ch == "," and depth == 0:
+            parts.append(cur)
+            cur = ""
+            continue
+        depth += ch in "{[("
+        depth -= ch in "}])"
+        cur += ch
+    return parts + [cur]
+
+
+def bridge_doc_properties(doc: str) -> dict[str, Any]:
+    """Schema properties from a RimBridge doc's leading '{a, b?: hint, c|d}' block (untyped: the bridge coerces).
+
+    Servers that grammar-constrain tool calls (llama.cpp / llama-swap) can only emit declared properties;
+    with an empty `properties` every call arrives as {}.
+    """
+    doc = doc.lstrip()
+    if not doc.startswith("{"):
+        return {}
+    depth = 0
+    for end, ch in enumerate(doc):
+        depth += ch in "{[("
+        depth -= ch in "}])"
+        if depth == 0:
+            break
+    else:
+        return {}
+    props: dict[str, Any] = {}
+    for part in _split_top(doc[1:end]):
+        head, _, hint = part.strip().partition(":")
+        for name in re.split(r"[|/]", head):
+            name = name.strip().rstrip("?").strip()
+            if re.fullmatch(r"[A-Za-z_]\w*", name):
+                props[name] = _hint_schema(hint.strip())
+    return props
+
+
+def _hint_schema(hint: str) -> dict[str, Any]:
+    """Type only the unambiguous hints ('bool', a true/false/number default); anything else stays free-form."""
+    js: dict[str, Any] = {"description": hint} if hint else {}
+    if hint in ("bool", "true", "false"):
+        js["type"] = "boolean"
+    elif hint == "int" or re.fullmatch(r"-?\d+", hint):
+        js["type"] = "integer"
+    elif hint == "float" or re.fullmatch(r"-?\d+\.\d+", hint):
+        js["type"] = "number"
+    return js
+
+
 @dataclass
 class Tool:
     name: str
@@ -141,7 +193,7 @@ class Registry:
                 name=name,
                 description=f"[RimBridge {method}] {doc}",
                 fn=make(method),
-                schema={"type": "object", "properties": {}, "additionalProperties": True, "description": "params as described: " + doc[:600]},
+                schema={"type": "object", "properties": bridge_doc_properties(doc), "additionalProperties": True, "description": "params as described: " + doc[:600]},
                 source="bridge",
                 group=method.split(".")[0],
             )
@@ -267,7 +319,9 @@ class Registry:
         try:
             if t.source == "bridge":
                 return t.fn(ctx, **args), True
-            args = {k: coerce_param(v) if k not in ("code", "body", "text", "content") else v for k, v in args.items()}
+            # parameters declared as strings stay strings: an all-digit short sha ("5252146") or id is not a number
+            strings = {k for k, p in (t.schema.get("properties") or {}).items() if p.get("type") == "string"}
+            args = {k: coerce_param(v) if k not in ("code", "body", "text", "content") and k not in strings else v for k, v in args.items()}
             sig = inspect.signature(t.fn)
             accepts_kwargs = any(p.kind == p.VAR_KEYWORD for p in sig.parameters.values())
             if not accepts_kwargs:
